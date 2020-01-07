@@ -74,7 +74,6 @@ export class SignupComponent implements OnInit {
     }else if(!this.mobileNumber){
       this.toaster.warning("please enter mobile number")
     }else {
-      console.log(data);
       this._http.signupUser(data).subscribe(
         data=>{
           if(data.status == "200"){

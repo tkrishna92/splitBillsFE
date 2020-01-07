@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from 'src/app/user.service';
+import { CookieService } from 'ngx-cookie-service';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-forgotpw',
@@ -7,9 +11,59 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ForgotpwComponent implements OnInit {
 
-  constructor() { }
+  public countryList : any = [];
+  public countryPhoneCode : string;
+  public email : string;
+  public mobileNumber : string;
+
+
+  constructor(private _http : UserService, private router : Router, private cookies : CookieService, private toaster : ToastrService) { }
 
   ngOnInit() {
+    this.getCountryList();
   }
 
+  public goToSignin = (): any =>{
+    this.router.navigate(['login']);
+  }
+
+  public getCountryList = (): any =>{
+    this._http.getCountryList().subscribe(
+      data=>{
+        this.countryList = [];
+        for(let x of data.data){
+          this.countryList.push(x);
+        }        
+      }
+    )
+  }
+
+  public getCountryCode = (country): any=>{
+    this._http.getPhoneCode(country).subscribe(
+      data=>{
+        this.countryPhoneCode = `+${data.data}`
+        console.log(this.countryPhoneCode);
+      }
+    )
+  }
+
+  public forgotPassword = (): any=>{
+    let data = {
+      email : this.email,
+      mobileNumber : this.mobileNumber
+    }
+    this._http.forgotPassword(data).subscribe(
+      data=>{
+        if(data.status == 200){
+          this.toaster.success(data.message);
+          setTimeout(()=>{
+            this.cookies.set('authToken', data.data.authToken);
+            this.router.navigate(['editpw'])
+          }, 1000);
+        }else{
+          this.toaster.warning(data.message);
+        }
+      }
+    )
+  }
 }

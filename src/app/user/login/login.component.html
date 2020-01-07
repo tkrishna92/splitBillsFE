@@ -1,1 +1,50 @@
-<p>login works!</p>
+<div class= "container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+                <a class="navbar-brand" routerLink="/">Split Bills</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" (click)="goToSignup()">Signup</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div> 
+    </div>
+    <div class = "row">
+        
+        <div class="col-md-4" style="margin-left: 25%; margin-right: 25%;">
+            <form style="max-width: 400px; min-width: 200px;">
+                <div class= "form-group">
+                    <h5>Login</h5>
+                    <label>
+                        email
+                    </label>
+                    <input type="text" name="email" [(ngModel)]="email" class="form-control inputForm"
+                    #emailId = "ngModel" placeholder="email" required autofocus>
+                </div>
+                <div [hidden]="emailId.valid || emailId.pristine" class="alert alert-danger" >please enter your email</div>
+
+                <div class="form-group">
+                    <label>
+                        password
+                    </label>
+                    <input type="password" name="password" [(ngModel)]="password" class="form-control inputForm"
+                    #passWord = "ngModel" placeholder="password" required autofocus>
+                </div>
+                <div [hidden] = "passWord.valid || passWord.pristine" class="alert alert-danger">please enter password</div>
+            </form>
+            <div style = "margin-left: 25%;">
+                <button type="button" class="btn btn-primary" (click) = "loginFunction()">Login</button>
+                <a href="forgotpw" class="card-link" style="margin-left: 10px;">forgot password?</a>
+            </div>
+        </div>
+    </div>
+</div>

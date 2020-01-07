@@ -43,7 +43,7 @@ export class UserService {
     const loginParams = new HttpParams()
     .set('email', data.email)
     .set('password', data.password)
-
+    
     return this._http.post(`${this.userUrl}/login`, loginParams)
   }
 
@@ -57,4 +57,29 @@ export class UserService {
     return JSON.parse(localStorage.getItem('userInfo'));
   }
 
+  //for getting logged in user details
+  public getSingleUserDetails(userId): any{
+    const userDetailParam = new HttpParams()
+    .set('userId', userId)
+    return this._http.post(`${this.userUrl}/getUserDetails?authToken=${this.cookies.get('authToken')}`, userDetailParam);
+  }
+
+  //for editing user details
+  public editUser(data): any{
+    const editParam = new HttpParams()
+    .set('userId', data.userId)
+    .set('firstName', data.firstName)
+    .set('lastName', data.lastName)
+    .set('mobileNumber', data.mobileNumber)
+    .set('country', data.country)
+    return this._http.post(`${this.userUrl}/editUser?authToken=${this.cookies.get('authToken')}`,editParam);
+  }
+
+  //for forgot password
+  public forgotPassword(data): any{
+    const forgotParams = new HttpParams()
+    .set('email',data.email)
+    .set('mobileNumber', data.mobileNumber)
+    return this._http.post(`${this.userUrl}/forgotPassword`, forgotParams);
+  }
 }
