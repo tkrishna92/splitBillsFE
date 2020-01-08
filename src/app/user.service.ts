@@ -82,4 +82,17 @@ export class UserService {
     .set('mobileNumber', data.mobileNumber)
     return this._http.post(`${this.userUrl}/forgotPassword`, forgotParams);
   }
+
+  //for edit password
+  public editPassword(data): any{
+    const editPasswordParam = new HttpParams()
+    .set('password', data.password)
+    return this._http.post(`${this.userUrl}/editPassword?authToken=${this.cookies.get('authToken')}`, editPasswordParam);
+  }
+
+  //for getting all the user details of all the users using the application
+  public getAllUserDetails(): any{
+    return this._http.get(`${this.userUrl}/getAllUsers?authToken=${this.cookies.get('authToken')}`);
+  }
+
 }

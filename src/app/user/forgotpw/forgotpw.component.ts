@@ -15,6 +15,7 @@ export class ForgotpwComponent implements OnInit {
   public countryPhoneCode : string;
   public email : string;
   public mobileNumber : string;
+  public twoMinuteToken : boolean = false;
 
 
   constructor(private _http : UserService, private router : Router, private cookies : CookieService, private toaster : ToastrService) { }
@@ -55,10 +56,11 @@ export class ForgotpwComponent implements OnInit {
     this._http.forgotPassword(data).subscribe(
       data=>{
         if(data.status == 200){
-          this.toaster.success(data.message);
+          this.toaster.success("edit password link valid for 2 minutes",data.message, {timeOut : 3000});
           setTimeout(()=>{
             this.cookies.set('authToken', data.data.authToken);
-            this.router.navigate(['editpw'])
+            this.cookies.set('email',data.data.userDetails.email)
+            this.twoMinuteToken = true;
           }, 1000);
         }else{
           this.toaster.warning(data.message);

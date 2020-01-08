@@ -1,0 +1,21 @@
+.ng-valid[required], .ng-valid.required{
+    border-left:2px solid rgb(106, 247, 106);
+}
+
+.ng-invalid:not(form){
+    border-left : 2px solid rgb(255, 81, 81);
+}
+
+.inputForm{
+    width: fit-content;
+    max-width: 250px;
+}
+
+.form-group{
+    margin-top: 2vh;
+    
+}
+
+.form{
+    justify-content: center;
+}
