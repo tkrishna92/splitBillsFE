@@ -21,6 +21,7 @@ import { SharedModule } from './shared/shared.module';
 import { SplitModule } from './split/split.module';
 import { LoginComponent } from './user/login/login.component';
 import { UserService } from './user.service';
+import { GroupService } from './group.service';
 
 
 
@@ -46,7 +47,7 @@ import { UserService } from './user.service';
       { path: '**', component: LoginComponent }
     ])
   ],
-  providers: [HttpClientModule, CookieService, UserService],
+  providers: [HttpClientModule, CookieService, UserService, GroupService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

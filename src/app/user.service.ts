@@ -95,4 +95,9 @@ export class UserService {
     return this._http.get(`${this.userUrl}/getAllUsers?authToken=${this.cookies.get('authToken')}`);
   }
 
+//log out user
+public logout(): any{
+  return this._http.get(`${this.userUrl}/logout?authToken=${this.cookies.get('authToken')}`);
+}
+
 }
