@@ -7,7 +7,7 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class GroupService {
 
-  public groupUrl = "http://localhost:3000/api/v1/users";
+  public groupUrl = "http://localhost:3000/api/v1/group";
 
   constructor(private _http : HttpClient, private cookies : CookieService) { }
 

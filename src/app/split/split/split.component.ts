@@ -32,8 +32,12 @@ export class SplitComponent implements OnInit {
   public userId : string;
   public groups : any = [];
   public splitUsers : any = [];
+  public groupDetails : any =[];
+  public selectedGroupId : string;
+  public newGroupName : string;
+  public newGroupUsers : [];
 
-  constructor(private spinner : NgxSpinnerService, private cookies : CookieService, private toaster : ToastrService, private router : Router, private userService : UserService, private groupService : GroupService ) { }
+  constructor(private spinner : NgxSpinnerService, private cookies : CookieService, private toaster : ToastrService , private router : Router, private userService : UserService, private groupService : GroupService ) { }
 
   ngOnInit() {
 
@@ -46,6 +50,8 @@ export class SplitComponent implements OnInit {
     this.userName = this.cookies.get('userName');
     this.userId = this.cookies.get('userId');
 
+    this.groupsOfUser();
+    this.getAllUsers();
 
   }
 
@@ -83,4 +89,60 @@ export class SplitComponent implements OnInit {
     )
   }
 
+  //get single group details
+  public getSingleGroup = (groupId):any=>{
+    let request = {
+      groupId : groupId
+    }
+    this.selectedGroupId = groupId;
+    this.groupService.getGroupDetails(request).subscribe(
+      data=>{
+        this.groupDetails = [];
+        if(data.status == 200){
+          this.groupDetails = data.data;
+          console.log(this.groupDetails);
+        }else{
+          this.toaster.warning(data.message);
+        }
+      }
+    )
+  }
+
+  //create new group
+  public createNewGroup = (): any=>{
+    let newGroupRequest = {
+      groupName : this.newGroupName,
+      groupUsers : this.newGroupUsers
+    }
+    console.log(newGroupRequest);
+  }
+
+  //logout user
+  public logout = ():any=>{
+    this.userService.logout().subscribe(
+      data=>{
+        if(data.status == 200){
+          console.log(data);
+          this.toaster.success(data.message);
+          setTimeout(()=>{
+            this.router.navigate(['/']);
+          },500)
+        }else{
+          this.toaster.warning(data.message);
+        }
+      }
+    )
+  }
+
+  //--------------------------functions for re-use----------------
+
+  //empty members array
+  public emptyMembers =():any=>{
+    this.newGroupUsers = [];
+  }
+
+  
+
 }
+
+

@@ -24,7 +24,6 @@ import { SharedModule } from '../shared/shared.module';
       {path : 'split', component : SplitComponent}
     ]),
     SharedModule
-
   ]
 })
 export class SplitModule { }

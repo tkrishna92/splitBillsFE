@@ -1,1 +1,97 @@
-<p>split works!</p>
+<!-- <ngx-spinner bdOpacity=0.9 bdColor="#333" size="default" color="#fff" type="ball-rotate" [fullScreen]="true">
+    <p style="color: white"> Loading... </p>
+</ngx-spinner> -->
+
+<div style="width: 100vw;">
+    <div class="row justify-content-end">
+        <div class="col-12">
+            <nav class="navbar navbar-expand-md navbar-light" style="background-color: rgb(65, 65, 65);">
+                <a class="navbar-brand" href="split"><b
+                        style="color: rgb(10, 235, 168); letter-spacing: 1.5px; font-family:'Courier New', Courier, monospace;">Split
+                        Bills</b></a>
+                <button class="navbar-toggler p-0 mr-2" type="button" data-toggle="collapse" data-target="#userSettings"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon p-2"
+                        style="background-color: rgb(10, 235, 168); border-radius: 8px;"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="userSettings">
+                    <ul class="navbar-nav ml-auto mr-5">
+                        <li class="nav-item dropdown mr-5">
+                            <a class="nav-link dropdown-toggle" style="color: rgb(10, 235, 168);" id="userDropdown"
+                                role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{userName}}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="edituser">Edit Profile</a>
+                                <a class="dropdown-item" (click)="logout()">Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-2 col-sm-3 leftColumn d-none d-sm-block">
+            <div class="row title justify-content-between">
+                <a>Groups</a>
+                <fa-icon [icon]="plusIcon" data-toggle="modal" data-target="#createNewGroup" (click)="emptyMembers()"></fa-icon>
+                <!-- Modal -->
+                <div class="modal fade" id="createNewGroup" tabindex="-1" role="dialog" aria-labelledby="NewGroup"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="NewGroup">Create New Group</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label>Group Name</label>
+                                        <input type="text" name="newGroupName" class="form-control inputForm"
+                                            [(ngModel)]="newGroupName" #groupname="ngModel"
+                                            placeholder="enter group name" required autofocus>
+                                    </div>
+                                    <div [hidden]="groupname.valid || groupname.pristine" class="alert alert-danger">
+                                        please enter a group name</div>
+
+                                    <div class="form-group">
+                                        <label>
+                                            Group Members
+                                        </label>
+                                        <select  name="newGroupUsers" [(ngModel)]="newGroupUsers" multiple size="4">
+                                            <option class="form-control inputForm" style="width : 100px;" *ngFor="let user of splitUser" value="user.userId">{{user.firstName}} {{user.lastName}}</option>
+                                        </select>
+                                        <input type="text" class="form-control inputForm" placeholder="ctrl + select multiple users" required autofocus>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button class="btn btn-primary" style="margin-right: 10px;" type="button"
+                                    data-dismiss="modal" (click)="createNewGroup()">create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row content" *ngFor="let group of groups">
+                <div class="col-12 p-0">
+                    <a [hidden]="selectedGroupId == group.groupId" (click)="getSingleGroup(group.groupId)"><span
+                            style="margin-left: 3px;">{{group.groupName}} qwe qwe qwe qwe</span></a>
+                    <a *ngIf="selectedGroupId == group.groupId" class="selectedGroup"><span
+                            style="margin-left: 3px;">{{group.groupName}} qwe qwe qwe qwe</span></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-9 centerColumn d-none d-sm-block">
+
+        </div>
+    </div>
+</div>

@@ -36,6 +36,7 @@ export class LoginComponent implements OnInit {
             this.cookies.set('userName', `${data.data.userDetails.firstName} ${data.data.userDetails.lastName}`);
             this.cookies.set('userId', data.data.userDetails.userId);
             this.cookies.set('authToken', data.data.authToken);
+            this.cookies.set('email', data.data.userDetails.email)
             this._http.setUserDetails(data.data.userDetails);
             this.router.navigate(['split']);
           }, 1000)
