@@ -23,13 +23,15 @@ export class GroupService {
   public addUserToGroup = (data):any=>{
     let addUserParam = new HttpParams()
     .set('groupId', data.groupId)
-    .set('userId', data.userId)
+    .set('email', data.email)
     return this._http.post(`${this.groupUrl}/addUserToGroup?authToken=${this.cookies.get('authToken')}`, addUserParam);
   }
 
   //get all the groups of the user
-  public getAllGroupsOfUser = (): any=>{
-    return this._http.get(`${this.groupUrl}/getAllGroupsOfUser?authToken=${this.cookies.get('authToken')}`);
+  public getAllGroupsOfUser = (email): any=>{
+    let allGroupsParam = new HttpParams()
+    .set('email', email)
+    return this._http.put(`${this.groupUrl}/getAllGroupsOfUser?authToken=${this.cookies.get('authToken')}`, allGroupsParam);
   }
 
   //get group details
@@ -37,6 +39,13 @@ export class GroupService {
     let groupDetailsParams = new HttpParams()
     .set('groupId', data.groupId)
     return this._http.post(`${this.groupUrl}/getGroupDetails?authToken=${this.cookies.get('authToken')}`,groupDetailsParams);
+  }
+
+  //delete group
+  public deleteGroup = (groupId): any=>{
+    let deleteGroupParam = new HttpParams()
+    .set('groupId', groupId)
+    return this._http.put(`${this.groupUrl}/deleteGroup?authToken=${this.cookies.get('authToken')}`, deleteGroupParam);
   }
 
 }

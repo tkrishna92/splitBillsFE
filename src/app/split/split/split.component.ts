@@ -35,7 +35,12 @@ export class SplitComponent implements OnInit {
   public groupDetails : any =[];
   public selectedGroupId : string;
   public newGroupName : string;
-  public newGroupUsers : [];
+  public newGroupUsers : any = [];
+  public selectGroupPrompt : boolean;
+  public firstChar : string;
+  public groupCreatedOn : string;
+  public availableUsers : any = [];
+  public groupUsersList : any = [];
 
   constructor(private spinner : NgxSpinnerService, private cookies : CookieService, private toaster : ToastrService , private router : Router, private userService : UserService, private groupService : GroupService ) { }
 
@@ -49,22 +54,23 @@ export class SplitComponent implements OnInit {
     this.authToken = this.cookies.get('authToken');
     this.userName = this.cookies.get('userName');
     this.userId = this.cookies.get('userId');
-
-    this.groupsOfUser();
-    this.getAllUsers();
+    this.selectGroupPrompt = true;
+    this.availableUsers = [];
+    
+    this.groupsOfUser(this.cookies.get('email'));
+    this.getAllUsers();   
 
   }
 
   //get the groups details that the user is member of
-  public groupsOfUser = ():any=>{
-    this.groupService.getAllGroupsOfUser().subscribe(
+  public groupsOfUser = (email):any=>{
+    this.groupService.getAllGroupsOfUser(email).subscribe(
       data=>{
         if(data.status== 200){
           this.groups = [];
           for(let x of data.data){
             this.groups.push(x);
           }
-          console.log(this.groups);
         }else if(data.status == 404){
           this.toaster.warning(data.message);
         }
@@ -79,9 +85,10 @@ export class SplitComponent implements OnInit {
         if(data.status == 200){
           this.splitUsers = [];
           for(let user of data.data){
-            this.splitUsers.push(user);
+            this.splitUsers.push(user);            
           }
-          console.log(this.splitUsers)
+          this.availableGroupUsersList(this.cookies.get('email'));
+          this.availableUsersList(this.cookies.get('email'));
         }else{
           this.toaster.warning(data.message);
         }
@@ -100,7 +107,22 @@ export class SplitComponent implements OnInit {
         this.groupDetails = [];
         if(data.status == 200){
           this.groupDetails = data.data;
-          console.log(this.groupDetails);
+          this.firstChar = data.data[0].groupName[0];
+          this.groupCreatedOn = data.data[0].groupCreatedOn.split('T')[0];
+          this.selectGroupPrompt = false;
+          this.getAllUsers();
+          setTimeout(()=>{
+            data.data[0].groupUsers.map((email)=>{
+              this.availableGroupUsersList(email);
+              setTimeout(()=>{
+                this.availableUsersList(email);
+              },500);
+            })
+          }, 500);
+          console.log(data.data[0]);
+          console.log(this.splitUsers);
+          console.log(this.groupUsersList);
+
         }else{
           this.toaster.warning(data.message);
         }
@@ -112,9 +134,36 @@ export class SplitComponent implements OnInit {
   public createNewGroup = (): any=>{
     let newGroupRequest = {
       groupName : this.newGroupName,
-      groupUsers : this.newGroupUsers
+      groupUsers : this.cookies.get('email')
     }
-    console.log(newGroupRequest);
+    this.groupService.createNewGroup(newGroupRequest).subscribe(
+      data=>{
+        if(data.status == 200){
+          this.toaster.success(data.message);
+          this.groupsOfUser(this.cookies.get('email'));
+        }else{
+          this.toaster.warning(data.message);
+        }
+      }
+    )
+  }
+
+  //add users to the group
+  public addUserToGroup = (email) : any=>{
+    let data = {
+      groupId : this.groupDetails[0].groupId,
+      email : email
+    }
+    this.groupService.addUserToGroup(data).subscribe(
+      data=>{
+        if(data.status == 200){
+          this.toaster.success(data.message);
+          this.availableUsersList(email);          
+        }else{
+          this.toaster.warning(data.message);
+        }
+      }
+    )
   }
 
   //logout user
@@ -136,12 +185,32 @@ export class SplitComponent implements OnInit {
 
   //--------------------------functions for re-use----------------
 
-  //empty members array
-  public emptyMembers =():any=>{
-    this.newGroupUsers = [];
+  // update a list of splitUsers for adding to groups
+  public availableUsersList = (email):any=>{
+    console.log("split users")
+    this.splitUsers.map((user)=>{
+      if(user.email == email){
+        let index = this.splitUsers.indexOf(user);
+        this.splitUsers.splice(index, 1);
+      }
+    })  
   }
 
-  
+  // update a list of splitUsers for adding to groups
+  public availableGroupUsersList = (email):any=>{
+    console.log("groupUsers")
+        this.splitUsers.map((user)=>{
+          if(user.email == email){
+            this.groupUsersList.push(user);
+          }
+        })
+  }
+
+  // public availableGroupUsersList = (email):any=>{
+  //   console.log("groupUsers")
+  //   if(this.groupUsersList.indexOf())      
+  // }
+    
 
 }
 

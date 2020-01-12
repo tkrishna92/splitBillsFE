@@ -2,11 +2,12 @@
     height: 80vh;
     max-width: 250px;
     margin-top: 15px;
+    padding-left : 10px;
 }
 
 .leftColumn .title{
     width : 100%;
-    background-color: rgb(113, 247, 214); 
+    background-color: rgb(108, 255, 218); 
     margin-bottom: 5%;
     padding-left: 5px;
     border-radius: 4px; 
@@ -15,20 +16,73 @@
 
 .leftColumn .content{
     width : 100%;
-    padding-left : 5%;
-    height: 1.5rem;
-    overflow: hidden;
+    height: 130px;
+    overflow: scroll;
+}
+
+.leftColumn .groupOptions{
+    padding-top : 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgb(196, 196, 196);
+    width : max-content;
+}
+
+.leftColumn .groupOptionIcons{
+    border : 2px solid rgb(161, 161, 161);
+    padding : 5px;
+    border-radius: 4px;
+    margin-left : 10px;
 }
 
 .leftColumn .selectedGroup{
     border-left: 5px solid rgb(72, 253, 208);
-    background-color: rgb(183, 255, 255);
+    background-color: rgb(208, 255, 255);
     width : 100%;
     border-radius: 7px;
+    margin-left : 15px;
+    padding: 0 10px 5px 3px;
 }
 
 .centerColumn{
-    border : 1px solid black;
-    height: 80vh;
+    margin-top: 5px;
+    height: 100vh;
     max-width: 650px;
+    box-shadow: 1.5px 1.5px 4px 4px rgb(208, 255, 255);
+}
+
+.centerColumn .header{
+    background-color: rgb(208, 255, 255);
+    box-shadow: 1px 1px 4px 2px rgb(208, 255, 255);
+    height : 80px;
+}
+
+.centerColumn .header .groupTitle{
+    /* background-color: rgb(250, 83, 83);
+    border-radius: 10px;
+    padding: 7px;
+    color: white;
+    margin-top: 25px;
+    width : max-content;
+    height: max-content;
+    box-shadow: 1px 1px 3px 2px rgb(250, 83, 83);  */
+    color : rgb(24, 1, 1);
+    margin-top : 5px;
+    width : max-content;
+}
+
+.centerColumn .header .dropper{
+    max-width: 220px;
+    max-height : 250px;
+    overflow: auto;    
+}
+ 
+.groupIcon{
+    padding: 10px;
+    border-radius: 5px;
+    background-color:rgb(72, 253, 208);
+    margin-right: 10px;
+    margin-bottom: 20px;
+    background-image: radial-gradient(rgb(255, 255, 255) 20%,rgb(38, 255, 201) 80%);
+    box-shadow: 1px 1px 3px 2px rgb(38, 255, 201);
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
