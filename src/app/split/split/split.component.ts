@@ -35,12 +35,12 @@ export class SplitComponent implements OnInit {
   public groupDetails : any =[];
   public selectedGroupId : string;
   public newGroupName : string;
-  public newGroupUsers : any = [];
   public selectGroupPrompt : boolean;
   public firstChar : string;
   public groupCreatedOn : string;
-  public availableUsers : any = [];
   public groupUsersList : any = [];
+  public viewGroupUsers : boolean;
+  
 
   constructor(private spinner : NgxSpinnerService, private cookies : CookieService, private toaster : ToastrService , private router : Router, private userService : UserService, private groupService : GroupService ) { }
 
@@ -55,8 +55,7 @@ export class SplitComponent implements OnInit {
     this.userName = this.cookies.get('userName');
     this.userId = this.cookies.get('userId');
     this.selectGroupPrompt = true;
-    this.availableUsers = [];
-    
+        
     this.groupsOfUser(this.cookies.get('email'));
     this.getAllUsers();   
 
@@ -105,6 +104,7 @@ export class SplitComponent implements OnInit {
     this.groupService.getGroupDetails(request).subscribe(
       data=>{
         this.groupDetails = [];
+        this.groupUsersList = [];
         if(data.status == 200){
           this.groupDetails = data.data;
           this.firstChar = data.data[0].groupName[0];
@@ -114,15 +114,13 @@ export class SplitComponent implements OnInit {
           setTimeout(()=>{
             data.data[0].groupUsers.map((email)=>{
               this.availableGroupUsersList(email);
+              this.viewGroupUsers = true;
               setTimeout(()=>{
                 this.availableUsersList(email);
               },500);
             })
           }, 500);
-          console.log(data.data[0]);
-          console.log(this.splitUsers);
-          console.log(this.groupUsersList);
-
+          
         }else{
           this.toaster.warning(data.message);
         }
@@ -199,17 +197,22 @@ export class SplitComponent implements OnInit {
   // update a list of splitUsers for adding to groups
   public availableGroupUsersList = (email):any=>{
     console.log("groupUsers")
-        this.splitUsers.map((user)=>{
-          if(user.email == email){
-            this.groupUsersList.push(user);
-          }
-        })
+    this.splitUsers.map((user)=>{
+      if(user.email == email){
+        this.groupUsersList.push(user);
+      }
+    })
   }
 
-  // public availableGroupUsersList = (email):any=>{
-  //   console.log("groupUsers")
-  //   if(this.groupUsersList.indexOf())      
-  // }
+  //group details view modifier
+  public groupDetailsView = (selector):any=>{
+    console.log(selector);
+    if(selector == "groupUsers"){
+      this.viewGroupUsers = true;
+    }else{
+      this.viewGroupUsers = false;
+    }
+  }
     
 
 }

@@ -83,9 +83,15 @@
                 </div>
             </div>
             <div class="row groupOptions">
+
+                <fa-icon class="groupOptionIcons" [icon]="groupIcon" (click)="groupDetailsView('groupUsers')"></fa-icon>
+                <fa-icon class="groupOptionIcons" [icon]="editIcon" (click)="groupDetailsView('expenseHistory')"></fa-icon>
                 <fa-icon class="groupOptionIcons" [icon]="plusIcon"></fa-icon>
-                <fa-icon class="groupOptionIcons" [icon]="plusIcon"></fa-icon>
-                <fa-icon class="groupOptionIcons" [icon]="plusIcon"></fa-icon>
+            </div>
+            <div *ngIf="viewGroupUsers" class="row">
+                <div class="col-12" *ngFor="let groupUser of groupUsersList">
+                    <a>{{groupUser.firstName}}</a>
+                </div>
             </div>
         </div>
         <div class="col-md-6 col-sm-8 centerColumn d-none d-sm-block">
@@ -109,7 +115,8 @@
                               Add Users to Group
                             </button>
                             <div class="dropdown-menu" aria-labelledby="addUserButton">
-                              <div *ngFor="let user of splitUsers" class="dropdown-item dropper">
+                                <div style="margin-left: 5px; border-bottom: 1px solid rgb(185, 185, 185); max-width: fit-content;">available users</div>
+                                <div *ngFor="let user of splitUsers" class="dropdown-item dropper">
                                     <fa-icon style="margin-right: 1rem;" class="groupOptionIcons" [icon]="plusIcon" (click) = "addUserToGroup(user.email)"></fa-icon>{{user.firstName}} {{user.lastName}}
                                 </div>
                               
