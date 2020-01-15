@@ -40,6 +40,14 @@ export class SplitComponent implements OnInit {
   public groupCreatedOn : string;
   public groupUsersList : any = [];
   public viewGroupUsers : boolean;
+  public newExpenseTitle : string;
+  public newExpenseDescription : string;
+  public newExpenseAmount : number;
+  public newExpensePaidBy : string;
+  public expenseInvolvedMembers : any = [];
+  public selectePayeeName : string;
+  public selectedExpInvolvedMembers : string;
+
   
 
   constructor(private spinner : NgxSpinnerService, private cookies : CookieService, private toaster : ToastrService , private router : Router, private userService : UserService, private groupService : GroupService ) { }
@@ -51,15 +59,25 @@ export class SplitComponent implements OnInit {
       this.spinner.hide();
     }, 2500)
 
+    
+    
     this.authToken = this.cookies.get('authToken');
     this.userName = this.cookies.get('userName');
     this.userId = this.cookies.get('userId');
+    this.newExpenseTitle = "";
+    this.newExpenseDescription = "";
+    this.newExpenseAmount = 0;
+    this.newExpensePaidBy = this.userId;
     this.selectGroupPrompt = true;
+    this.selectePayeeName = "you";
+    this.selectedExpInvolvedMembers = "";
         
     this.groupsOfUser(this.cookies.get('email'));
     this.getAllUsers();   
 
   }
+
+  //----------------------functions using groupService------------------
 
   //get the groups details that the user is member of
   public groupsOfUser = (email):any=>{
@@ -71,24 +89,6 @@ export class SplitComponent implements OnInit {
             this.groups.push(x);
           }
         }else if(data.status == 404){
-          this.toaster.warning(data.message);
-        }
-      }
-    )
-  }
-
-  // get all the users of the application available for adding to groups
-  public getAllUsers = ():any=>{
-    this.userService.getAllUserDetails().subscribe(
-      data=>{
-        if(data.status == 200){
-          this.splitUsers = [];
-          for(let user of data.data){
-            this.splitUsers.push(user);            
-          }
-          this.availableGroupUsersList(this.cookies.get('email'));
-          this.availableUsersList(this.cookies.get('email'));
-        }else{
           this.toaster.warning(data.message);
         }
       }
@@ -164,6 +164,47 @@ export class SplitComponent implements OnInit {
     )
   }
 
+  // --------------------------------functions using expenseService---------------------------------
+  public createNewExpense = (): any=>{
+    console.log(this.groupDetails);
+    let expInvMems = [...new Set(this.expenseInvolvedMembers)].toString();
+    
+    let data = {
+      groupId : this.groupDetails[0].groupId,
+      expenseTitle : this.newExpenseTitle,
+      description : this.newExpenseDescription,
+      amount : this.newExpenseAmount,
+      paidBy : this.newExpensePaidBy,
+      involvedMembers : expInvMems
+    }
+    console.log(data);
+
+    this.selectePayeeName = "you";
+  }
+
+
+
+
+  //----------------------functions using userService---------------------
+
+  // get all the users of the application available for adding to groups
+  public getAllUsers = ():any=>{
+    this.userService.getAllUserDetails().subscribe(
+      data=>{
+        if(data.status == 200){
+          this.splitUsers = [];
+          for(let user of data.data){
+            this.splitUsers.push(user);            
+          }
+          this.availableGroupUsersList(this.cookies.get('email'));
+          this.availableUsersList(this.cookies.get('email'));
+        }else{
+          this.toaster.warning(data.message);
+        }
+      }
+    )
+  }
+
   //logout user
   public logout = ():any=>{
     this.userService.logout().subscribe(
@@ -181,7 +222,8 @@ export class SplitComponent implements OnInit {
     )
   }
 
-  //--------------------------functions for re-use----------------
+
+  //--------------------------generic functions----------------
 
   // update a list of splitUsers for adding to groups
   public availableUsersList = (email):any=>{
@@ -213,7 +255,26 @@ export class SplitComponent implements OnInit {
       this.viewGroupUsers = false;
     }
   }
-    
+  
+  //add user as expense payee
+  public addPaidByUser = (userId, firstName, lastName): any=>{
+    console.log(userId+" "+firstName+" "+lastName);
+    this.newExpensePaidBy = userId;
+    this.selectePayeeName = `${firstName} ${lastName}`;
+  }
+
+  //add user in an expense 
+  public addExpenseMember = (userId, firstName, lastName): any=>{
+    this.expenseInvolvedMembers.push(userId);
+    console.log(this.selectedExpInvolvedMembers);
+    if(this.selectedExpInvolvedMembers.length > 1){
+      console.log(this.selectedExpInvolvedMembers)
+      this.selectedExpInvolvedMembers = this.selectedExpInvolvedMembers +`, ${firstName} ${lastName}`
+      console.log(this.selectedExpInvolvedMembers)
+    }
+  }
+
+
 
 }
 

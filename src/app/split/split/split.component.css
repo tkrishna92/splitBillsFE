@@ -86,3 +86,20 @@
     box-shadow: 1px 1px 3px 2px rgb(38, 255, 201);
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
+
+.heading {
+    background-color: rgb(206, 206, 206); 
+    padding : 3px;
+    border-radius: 3px; 
+    margin-top : 3px;
+}
+
+.expenseDetail {
+    width : fit-content;
+}
+
+.expenseDetail .expenseMembers{
+    padding : 3px 8px 3px 8px;
+    background-color: rgb(38, 255, 201);
+    border-radius: 8px;
+}

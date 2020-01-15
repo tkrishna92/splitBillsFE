@@ -89,6 +89,7 @@
                 <fa-icon class="groupOptionIcons" [icon]="plusIcon"></fa-icon>
             </div>
             <div *ngIf="viewGroupUsers" class="row">
+                <h6 class="text-muted heading">Group Members</h6>
                 <div class="col-12" *ngFor="let groupUser of groupUsersList">
                     <a>{{groupUser.firstName}}</a>
                 </div>
@@ -123,9 +124,89 @@
                             </div>
                         </div>
                         <div class="dropdown" style="margin-left: 5px;">
-                            <button class="btn btn-sm btn-secondary" type="button">
+                            <button class="btn btn-sm btn-secondary" type="button" data-toggle="modal" data-target="#createNewExpense">
                               Add Expenses
-                            </button>                            
+                            </button>
+
+                            <!-- modal for add expenses-->
+                            <div class="modal fade" id="createNewExpense" tabindex="-1" role="dialog" aria-labelledby="NewExpense"
+                                aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="NewExpense">Create New Expense</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form>
+                                                <div class="form-group">
+                                                    <label>Expense Title</label>
+                                                    <input type="text" name="newExpenseTitle" class="form-control inputForm"
+                                                        [(ngModel)]="newExpenseTitle" #newexpensetitle="ngModel"
+                                                        placeholder="enter expense title" required autofocus>
+                                                </div>
+                                                <div [hidden]="newexpensetitle.valid || newexpensetitle.pristine" class="alert alert-danger">
+                                                    please enter expense title
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Expense description</label>
+                                                    <input type="text" name="newExpenseDescription" class="form-control inputForm"
+                                                        [(ngModel)]="newExpenseDescription" #newexpensedescription="ngModel"
+                                                        placeholder="enter description of expense" required autofocus>
+                                                </div>
+                                                <div [hidden]="newexpensedescription.valid || newexpensedescription.pristine" class="alert alert-danger">
+                                                    please enter a description
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Amount</label>
+                                                    <input type="text" name="newExpenseAmount" class="form-control inputForm"
+                                                        [(ngModel)]="newExpenseAmount" #newexpenseamount="ngModel"
+                                                        placeholder="enter amount" required autofocus>
+                                                </div>
+                                                <div [hidden]="newexpenseamount.valid || newexpenseamount.pristine" class="alert alert-danger">
+                                                    please enter amount
+                                                </div>
+                                            </form>
+                                            <div class = "expenseDetail">
+                                                <div class="col">
+                                                    expense paid by 
+                                                    <button type="button" class="expenseMembers" id="addPaidByButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        {{selectePayeeName}}
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="addPaidByButton">
+                                                        <div style="margin-left: 5px; border-bottom: 1px solid rgb(185, 185, 185); max-width: fit-content;">available users</div>
+                                                        <div *ngFor="let user of groupUsersList" class="dropdown-item dropper" (click) = "addPaidByUser(user.userId, user.firstName, user.lastName)">
+                                                            <fa-icon style="margin-right: 1rem;" class="groupOptionIcons" [icon]="plusIcon"></fa-icon>{{user.firstName}} {{user.lastName}}
+                                                        </div>                                                      
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                     and equally split amongst 
+                                                     <button type="button" class="expenseMembers" id="addExpenseMembers" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <a *ngIf = "selectedExpInvolvedMembers != '' ">select members</a>
+                                                        <a>{{selectedExpInvolvedMembers}}</a>
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="addExpenseMembers">
+                                                        <div style="margin-left: 5px; border-bottom: 1px solid rgb(185, 185, 185); max-width: fit-content;">available users</div>
+                                                        <div *ngFor="let user of groupUsersList" class="dropdown-item dropper" (click) = "addExpenseMember(user.userId, user.firstName, user.lastName)">
+                                                            <fa-icon style="margin-right: 1rem;" class="groupOptionIcons" [icon]="plusIcon" ></fa-icon>{{user.firstName}} {{user.lastName}}
+                                                        </div>                                                      
+                                                    </div>
+                                                </div>                                                
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <button class="btn btn-primary" style="margin-right: 10px;" type="button"
+                                                data-dismiss="modal" (click)="createNewExpense()">create</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
