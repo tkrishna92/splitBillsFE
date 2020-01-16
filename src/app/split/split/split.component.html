@@ -33,7 +33,7 @@
         </div>
     </div>
 </div>
-<div class="container-fluid">
+<div class="container-fluid" style="background-color:rgb(215, 219, 223)">
     <div class="row justify-content-center">
         <div class="col-md-2 col-sm-3 leftColumn d-none d-sm-block">
             <div class="row title justify-content-between">
@@ -85,11 +85,30 @@
             <div class="row groupOptions">
 
                 <fa-icon class="groupOptionIcons" [icon]="groupIcon" (click)="groupDetailsView('groupUsers')"></fa-icon>
-                <fa-icon class="groupOptionIcons" [icon]="editIcon" (click)="groupDetailsView('expenseHistory')"></fa-icon>
-                <fa-icon class="groupOptionIcons" [icon]="plusIcon"></fa-icon>
+                <div class="groupOptionIcons" (click)="groupDetailsView('whoOwesYou')">
+                    <fa-icon [icon]="wallet"></fa-icon>
+                    <fa-icon [icon]="simplePlusIcon" style ="margin-left : 2px; font-size: 0.7rem;"></fa-icon>
+                </div>
+                <div class="groupOptionIcons" (click)="groupDetailsView('whomYouOwe')">
+                    <fa-icon [icon]="wallet" ></fa-icon>
+                    <fa-icon [icon]="simpleMinusIcon" style="margin-left : 2px; font-size: 0.7rem;"></fa-icon>
+                </div>
+                
             </div>
             <div *ngIf="viewGroupUsers" class="row">
                 <h6 class="text-muted heading">Group Members</h6>
+                <div class="col-12" *ngFor="let groupUser of groupUsersList">
+                    <a>{{groupUser.firstName}}</a>
+                </div>
+            </div>
+            <div *ngIf="viewWhoOwesYou" class="row">
+                <h6 class="text-muted heading">You get</h6>
+                <div class="col-12" *ngFor="let groupUser of groupUsersList">
+                    <a>{{groupUser.firstName}}</a>
+                </div>
+            </div>
+            <div *ngIf="viewWhomYouOwe" class="row">
+                <h6 class="text-muted heading">You Owe</h6>
                 <div class="col-12" *ngFor="let groupUser of groupUsersList">
                     <a>{{groupUser.firstName}}</a>
                 </div>
@@ -175,7 +194,8 @@
                                                 <div class="col">
                                                     expense paid by 
                                                     <button type="button" class="expenseMembers" id="addPaidByButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        {{selectePayeeName}}
+                                                        <a *ngIf = "selectedPayeeNameFlag">you</a>
+                                                        <a *ngIf = "!selectedPayeeNameFlag">{{selectedPayeeName}}</a>
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="addPaidByButton">
                                                         <div style="margin-left: 5px; border-bottom: 1px solid rgb(185, 185, 185); max-width: fit-content;">available users</div>
@@ -187,7 +207,7 @@
                                                 <div class="col">
                                                      and equally split amongst 
                                                      <button type="button" class="expenseMembers" id="addExpenseMembers" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <a *ngIf = "selectedExpInvolvedMembers != '' ">select members</a>
+                                                        <a *ngIf = "selectedMembersFlag">Select Members</a>
                                                         <a>{{selectedExpInvolvedMembers}}</a>
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="addExpenseMembers">
@@ -205,6 +225,43 @@
                                                 data-dismiss="modal" (click)="createNewExpense()">create</button>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 ">
+                    <div class="row expenseContent" *ngFor="let expense of expenses" >
+                        <div class="col-12" (click)="selectExpense(expense.expenseId)">
+                            <div class="row justify-content-between" data-toggle="collapse" href="#expenseDetail" role="button" aria-expanded="false" aria-controls="expenseDetail">
+                                <div class="col-2">
+                                    <div>{{expense.expenseTitle}}</div>
+                                </div>
+                                <div class="col-4">
+                                    <div class= "small text-muted" style= "margin-top : 3px; overflow: scroll;">{{expense.expenseDescription}}</div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="row small"><u>created</u></div>
+                                    <div class="row small">{{expense.expenseCreatedOn.split('T')[0]}}</div>
+                                </div>
+                                <div class="collapse col-12" id="expenseDetail" *ngIf="selectExpenseId == expense.expenseId">
+                                   <div class="card card-body">
+                                     <div class="row">
+                                        <div class="col-12 expenseSubject">
+                                            {{payeeName}} paid {{expense.expenseAmount}} for {{expense.expenseTitle}}
+                                            <div class="row small ml-2">
+                                                created : {{expense.expenseCreatedOn.split('T')[0]}} by {{expense.expenseCreatorName}}
+                                            </div>
+                                            <div class="row small ml-2" *ngIf="expenseModifiedBy">
+                                                last modified on : {{expense.expenseModifiedOn.split('T')[0]}} by {{expenseModifiedBy}}
+                                            </div>
+                                        </div>                                        
+                                        <div class="col-6" style = "border-right : 1px solid rgb(255, 92, 92)">
+                                            <p class="small expenseOwed" *ngFor="let owed of owedBy">{{owed}} for {{expense.expenseTitle}}</p>
+                                        </div>
+                                        <div class="col-6">
+                                     </div>
+                                   </div>
                                 </div>
                             </div>
                         </div>

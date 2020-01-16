@@ -20,35 +20,35 @@ export class ExpenseService {
     .set("involvedMembers", data.involvedMembers)
     .set("amount", data.amount)
     .set("paidBy", data.paidBy)
-    this._http.post(`${this.expenseUrl}/createNewExpense?authToken=${this.cookies.get('authToken')}`, newExpenseParams);
+    return this._http.post(`${this.expenseUrl}/createNewExpense?authToken=${this.cookies.get('authToken')}`, newExpenseParams);
   }
 
   // get all expenses of the group
   public getAllGroupExpenses = (data): any=>{
     let groupParam = new HttpParams()
     .set("groupId", data.groupId)
-    this._http.post(`${this.expenseUrl}/getAllGroupExpenses?authToken=${this.cookies.get('authToken')}`, groupParam);
+    return this._http.post(`${this.expenseUrl}/getAllGroupExpenses?authToken=${this.cookies.get('authToken')}`, groupParam);
   }
 
   //get expense details
   public getExpenseDetails = (data): any=>{
     let expenseDetailsParam = new HttpParams()
     .set("expenseId", data.expenseId)
-    this._http.put(`${this.expenseUrl}/getExpenseDetails?authToken=${this.cookies.get('authToken')}`, expenseDetailsParam);
+    return this._http.put(`${this.expenseUrl}/getExpenseDetails?authToken=${this.cookies.get('authToken')}`, expenseDetailsParam);
   }
 
   //get all balances of the expense
   public getAllExpenseBalance = (data): any =>{
     let expenseParam = new HttpParams()
     .set("expenseId", data.expenseId)
-    this._http.post(`${this.expenseUrl}/getAllExpenseBalance?authToken=${this.cookies.get('authToken')}`, expenseParam);
+    return this._http.post(`${this.expenseUrl}/getAllExpenseBalance?authToken=${this.cookies.get('authToken')}`, expenseParam);
   }
 
   // delete expense and related balances
   public deleteExpense = (data): any=>{
     let deleteExpenseParam = new HttpParams()
     .set("expenseId", data.expenseId)
-    this._http.put(`${this.expenseUrl}/deleteExpense?authToken=${this.cookies.get('authToken')}`,deleteExpenseParam)
+    return this._http.put(`${this.expenseUrl}/deleteExpense?authToken=${this.cookies.get('authToken')}`,deleteExpenseParam)
   }
 
   

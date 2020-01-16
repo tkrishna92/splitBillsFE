@@ -6,7 +6,8 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/user.service';
 import { GroupService } from 'src/app/group.service';
-import { faUserFriends, faPlusCircle, faEdit, faTrash, faUndo, faRedo, faEllipsisV, faCheck, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faUserFriends, faPlusCircle, faEdit, faTrash, faWallet, faPlus, faMinus, faEllipsisV} from '@fortawesome/free-solid-svg-icons';
+import { ExpenseService } from 'src/app/expense.service';
 
 @Component({
   selector: 'app-split',
@@ -25,6 +26,9 @@ export class SplitComponent implements OnInit {
   public editIcon = faEdit;
   public recycleIcon = faTrash;
   public optionsIcon = faEllipsisV;
+  public wallet = faWallet;
+  public simplePlusIcon = faPlus;
+  public simpleMinusIcon = faMinus;
 
   //public variables
   public authToken : string;
@@ -45,12 +49,20 @@ export class SplitComponent implements OnInit {
   public newExpenseAmount : number;
   public newExpensePaidBy : string;
   public expenseInvolvedMembers : any = [];
-  public selectePayeeName : string;
+  public selectedPayeeName : string;
   public selectedExpInvolvedMembers : string;
+  public selectedMembersFlag : boolean;
+  public selectedPayeeNameFlag : boolean;
+  public expenses : any [] = [];
+  public viewWhomYouOwe : boolean;
+  public viewWhoOwesYou : boolean;
+  public selectExpenseId : string;
+  public owedBy : string []= [];
+  public payeeName : string;  
+  public expenseAmount : number;
+  public allExpenseBalances :string[] = [];
 
-  
-
-  constructor(private spinner : NgxSpinnerService, private cookies : CookieService, private toaster : ToastrService , private router : Router, private userService : UserService, private groupService : GroupService ) { }
+  constructor(private spinner : NgxSpinnerService, private cookies : CookieService, private toaster : ToastrService , private router : Router, private userService : UserService, private groupService : GroupService, private expenseService : ExpenseService) { }
 
   ngOnInit() {
 
@@ -69,8 +81,9 @@ export class SplitComponent implements OnInit {
     this.newExpenseAmount = 0;
     this.newExpensePaidBy = this.userId;
     this.selectGroupPrompt = true;
-    this.selectePayeeName = "you";
     this.selectedExpInvolvedMembers = "";
+    this.selectedMembersFlag = true;
+    this.selectedPayeeNameFlag = true;
         
     this.groupsOfUser(this.cookies.get('email'));
     this.getAllUsers();   
@@ -120,7 +133,7 @@ export class SplitComponent implements OnInit {
               },500);
             })
           }, 500);
-          
+          this.getAllExpensesOfGroup();
         }else{
           this.toaster.warning(data.message);
         }
@@ -156,7 +169,10 @@ export class SplitComponent implements OnInit {
       data=>{
         if(data.status == 200){
           this.toaster.success(data.message);
-          this.availableUsersList(email);          
+          this.availableUsersList(email);
+          setTimeout(()=>{
+            this.availableUsersList(email);
+          },500);       
         }else{
           this.toaster.warning(data.message);
         }
@@ -165,10 +181,11 @@ export class SplitComponent implements OnInit {
   }
 
   // --------------------------------functions using expenseService---------------------------------
+  
+  // create a new expense in the group
   public createNewExpense = (): any=>{
     console.log(this.groupDetails);
-    let expInvMems = [...new Set(this.expenseInvolvedMembers)].toString();
-    
+    let expInvMems = [...new Set(this.expenseInvolvedMembers)].toString();    
     let data = {
       groupId : this.groupDetails[0].groupId,
       expenseTitle : this.newExpenseTitle,
@@ -177,11 +194,111 @@ export class SplitComponent implements OnInit {
       paidBy : this.newExpensePaidBy,
       involvedMembers : expInvMems
     }
-    console.log(data);
-
-    this.selectePayeeName = "you";
+    this.expenseService.createNewExpense(data).subscribe(
+      data=>{
+        if(data.status == 200){
+          this.toaster.success(data.message);
+          this.selectedPayeeName = "you";
+          this.getAllExpensesOfGroup();
+        }else{
+          this.toaster.warning(data.message);
+          this.selectedPayeeName = "you";
+          this.getAllExpensesOfGroup();
+        }
+      }
+    )
   }
 
+  // get all the expenses of the group
+  public getAllExpensesOfGroup = (): any=>{
+    let data = {
+      groupId : this.groupDetails[0].groupId
+    }
+    this.allExpenseBalances = [];
+    this.expenseService.getAllGroupExpenses(data).subscribe(
+      data=>{
+        if(data.status == 200){
+          this.toaster.success(data.message);
+          console.log(data);
+          this.expenses = data.data;
+          this.expenses.forEach((expense)=>{
+            this.getAllGroupBalances(expense.expenseId);
+            this.groupUsersList.map((user)=>{
+              if(user.userId == expense.expenseCreatedBy){
+                  expense['expenseCreatorName']= `${user.firstName} ${user.lastName}`
+              }
+            })
+          })
+          this.expenses.forEach((expense)=>{
+            this.groupUsersList.map((user)=>{
+              if(user.userId == expense.expenseModifiedBy){
+                  expense['expenseModifierName']= `${user.firstName} ${user.lastName}`
+              }
+            })
+          })
+          console.log(this.expenses);
+          console.log(this.allExpenseBalances);
+
+        }else if (data.status == 404){
+          this.toaster.warning(data.message);
+          this.expenses = [];
+        }else{
+          this.toaster.warning(data.message);
+          this.expenses = [];
+        }
+      }
+    )
+  }
+
+  //get all pending balances of the group
+  public getAllGroupBalances = (expenseId): any=>{
+    let data = {
+      expenseId : expenseId
+    }
+    this.expenseService.getAllExpenseBalance(data).subscribe(
+      data=>{
+        if(data.status == 200){
+          this.allExpenseBalances.push(data.data);
+        }else {
+          this.toaster.warning(data.message);
+        }
+        console.log(this.allExpenseBalances)
+      }
+    )
+  }
+
+  //get the balances of selected expense
+  public getAllExpenseBalance = (expenseId): any=>{
+    let data = {
+      expenseId : expenseId
+    }
+    this.owedBy = [];
+    this.payeeName = "";
+    this.expenseAmount = 0;
+    this.expenseService.getAllExpenseBalance(data).subscribe(
+      data=>{
+        if(data.status == 200){
+          console.log(data)
+          console.log(this.groupUsersList);
+          this.groupUsersList.map((user)=>{
+            if(user.userId == data.data[0].payee){
+              this.payeeName = `${user.firstName} ${user.lastName}`;
+            }
+          });
+          data.data.forEach(balance => {
+            this.groupUsersList.map((user)=>{
+              if(user.userId == balance.owedBy && user.userId != balance.payee){
+                this.owedBy.push(`${user.firstName} ${user.lastName} owes ${this.payeeName} an amount of ${balance.debtAmount}`)
+              }
+            })
+            console.log(this.owedBy)
+          });
+        }else{
+          this.toaster.warning(data.message);
+        }
+      }
+    )
+  }
 
 
 
@@ -251,8 +368,16 @@ export class SplitComponent implements OnInit {
     console.log(selector);
     if(selector == "groupUsers"){
       this.viewGroupUsers = true;
-    }else{
+      this.viewWhoOwesYou = false;
+      this.viewWhomYouOwe = false;
+    }else if (selector == "whoOwesYou"){
       this.viewGroupUsers = false;
+      this.viewWhoOwesYou = true;
+      this.viewWhomYouOwe = false;
+    }else if(selector == "whomYouOwe"){
+      this.viewGroupUsers = false;
+      this.viewWhoOwesYou = false;
+      this.viewWhomYouOwe = true;
     }
   }
   
@@ -260,21 +385,30 @@ export class SplitComponent implements OnInit {
   public addPaidByUser = (userId, firstName, lastName): any=>{
     console.log(userId+" "+firstName+" "+lastName);
     this.newExpensePaidBy = userId;
-    this.selectePayeeName = `${firstName} ${lastName}`;
+    this.selectedPayeeNameFlag = false
+    this.selectedPayeeName = `${firstName} ${lastName}`;
   }
 
   //add user in an expense 
   public addExpenseMember = (userId, firstName, lastName): any=>{
     this.expenseInvolvedMembers.push(userId);
-    console.log(this.selectedExpInvolvedMembers);
     if(this.selectedExpInvolvedMembers.length > 1){
-      console.log(this.selectedExpInvolvedMembers)
       this.selectedExpInvolvedMembers = this.selectedExpInvolvedMembers +`, ${firstName} ${lastName}`
-      console.log(this.selectedExpInvolvedMembers)
+    }else{
+      this.selectedMembersFlag = false;
+      this.selectedExpInvolvedMembers = `${firstName} ${lastName}`;
     }
   }
 
+  //select expense
+  public selectExpense =(expenseId):any=>{
+    this.selectExpenseId = expenseId;
+    this.getAllExpenseBalance(expenseId);
+  }
 
+  //calculate the total pending settlements of the group
+  public calculateSettlements = (): any=>{
+  }
 
 }
 

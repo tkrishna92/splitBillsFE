@@ -31,7 +31,7 @@
     border : 2px solid rgb(161, 161, 161);
     padding : 5px;
     border-radius: 4px;
-    margin-left : 10px;
+    margin-left : 7px;
 }
 
 .leftColumn .selectedGroup{
@@ -102,4 +102,27 @@
     padding : 3px 8px 3px 8px;
     background-color: rgb(38, 255, 201);
     border-radius: 8px;
+}
+
+.expenseContent {
+    background-color: rgb(192, 192, 192);
+    margin-top: 2px;
+    padding: 2px 0 2px 5px;
+    overflow: scroll;
+}
+
+.expenseSubject {
+    background-color: indianred;
+    color : white;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.expenseOwed {
+    max-height: 200px;
+    overflow: scroll;
+    background-color: rgb(72, 253, 208);
+    border-radius: 3px;
+    padding : 5px;
+    margin : 3px;
 }
