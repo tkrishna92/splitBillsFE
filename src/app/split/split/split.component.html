@@ -96,21 +96,23 @@
                 
             </div>
             <div *ngIf="viewGroupUsers" class="row">
-                <h6 class="text-muted heading">Group Members</h6>
-                <div class="col-12" *ngFor="let groupUser of groupUsersList">
+                <h6 class="heading">Group Members</h6>
+                <div class="col-12 selectedGroupOptionContent" *ngFor="let groupUser of groupUsersList">
                     <a>{{groupUser.firstName}}</a>
                 </div>
             </div>
             <div *ngIf="viewWhoOwesYou" class="row">
-                <h6 class="text-muted heading">You get</h6>
-                <div class="col-12" *ngFor="let groupUser of groupUsersList">
-                    <a>{{groupUser.firstName}}</a>
+                <h6 class="heading">You Get</h6>
+                <div class="col-12 selectedGroupOptionContent" *ngFor="let groupUser of groupUsersList">
+                    <a *ngIf="groupUser.userId != userId" >{{groupUser.firstName}} {{groupUser.lastName}} owes you </a>
+                    <a><span style="color:rgb(58, 184, 146)">{{allGroupDebt[groupUser.userId]}}</span></a>
                 </div>
             </div>
             <div *ngIf="viewWhomYouOwe" class="row">
-                <h6 class="text-muted heading">You Owe</h6>
-                <div class="col-12" *ngFor="let groupUser of groupUsersList">
-                    <a>{{groupUser.firstName}}</a>
+                <h6 class="heading">You Owe</h6>
+                <div class="col-12 selectedGroupOptionContent" *ngFor="let groupUser of groupUsersList">
+                    <a *ngIf ="groupUser.userId != userId">You owe {{groupUser.firstName}} {{groupUser.lastName}}</a>
+                    <a ><span style="color:rgb(184, 58, 58)"> {{allGroupCreditsBalance[groupUser.userId]}}</span></a>
                 </div>
             </div>
         </div>
@@ -230,7 +232,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 ">
+                <div class="col-12">
                     <div class="row expenseContent" *ngFor="let expense of expenses" >
                         <div class="col-12" (click)="selectExpense(expense.expenseId)">
                             <div class="row justify-content-between" data-toggle="collapse" href="#expenseDetail" role="button" aria-expanded="false" aria-controls="expenseDetail">
@@ -238,7 +240,7 @@
                                     <div>{{expense.expenseTitle}}</div>
                                 </div>
                                 <div class="col-4">
-                                    <div class= "small text-muted" style= "margin-top : 3px; overflow: scroll;">{{expense.expenseDescription}}</div>
+                                    <div class= "small text-muted" style= "margin-top : 3px; overflow: auto; scrollbar-width: 3px;">{{expense.expenseDescription}}</div>
                                 </div>
                                 <div class="col-3">
                                     <div class="row small"><u>created</u></div>

@@ -42,7 +42,7 @@ export class SplitComponent implements OnInit {
   public selectGroupPrompt : boolean;
   public firstChar : string;
   public groupCreatedOn : string;
-  public groupUsersList : any = [];
+  public groupUsersList : any[] = [];
   public viewGroupUsers : boolean;
   public newExpenseTitle : string;
   public newExpenseDescription : string;
@@ -60,7 +60,9 @@ export class SplitComponent implements OnInit {
   public owedBy : string []= [];
   public payeeName : string;  
   public expenseAmount : number;
-  public allExpenseBalances :string[] = [];
+  public allGroupBalances :any[] = [];
+  public allGroupDebt : any[] = [];
+  public allGroupCreditsBalance : any[] = [];
 
   constructor(private spinner : NgxSpinnerService, private cookies : CookieService, private toaster : ToastrService , private router : Router, private userService : UserService, private groupService : GroupService, private expenseService : ExpenseService) { }
 
@@ -128,6 +130,8 @@ export class SplitComponent implements OnInit {
             data.data[0].groupUsers.map((email)=>{
               this.availableGroupUsersList(email);
               this.viewGroupUsers = true;
+              this.viewWhoOwesYou = false;
+              this.viewWhomYouOwe = false;
               setTimeout(()=>{
                 this.availableUsersList(email);
               },500);
@@ -214,7 +218,9 @@ export class SplitComponent implements OnInit {
     let data = {
       groupId : this.groupDetails[0].groupId
     }
-    this.allExpenseBalances = [];
+    this.allGroupBalances = [];
+    this.allGroupDebt = [];
+    this.allGroupCreditsBalance = [];
     this.expenseService.getAllGroupExpenses(data).subscribe(
       data=>{
         if(data.status == 200){
@@ -236,8 +242,10 @@ export class SplitComponent implements OnInit {
               }
             })
           })
-          console.log(this.expenses);
-          console.log(this.allExpenseBalances);
+          setTimeout(()=>{
+            this.calculateUserPendingCredits();
+            this.calculateUserPendingDebts();
+          }, 200);
 
         }else if (data.status == 404){
           this.toaster.warning(data.message);
@@ -258,11 +266,13 @@ export class SplitComponent implements OnInit {
     this.expenseService.getAllExpenseBalance(data).subscribe(
       data=>{
         if(data.status == 200){
-          this.allExpenseBalances.push(data.data);
+          data.data.forEach(balance => {
+            this.allGroupBalances.push(balance)
+          });
+          // this.allGroupBalances.push(data.data);
         }else {
           this.toaster.warning(data.message);
-        }
-        console.log(this.allExpenseBalances)
+        }      
       }
     )
   }
@@ -407,7 +417,42 @@ export class SplitComponent implements OnInit {
   }
 
   //calculate the total pending settlements of the group
-  public calculateSettlements = (): any=>{
+  public calculateUserPendingCredits = (): any=>{
+    let owers = [];
+    this.allGroupBalances.forEach((balance)=>{
+      if(balance.owedBy != this.userId){
+        owers.push(balance.owedBy);
+      }
+    })
+    let newOwers = [... new Set(owers)]
+    newOwers.forEach((user)=>{
+      this.allGroupDebt[user] = 0;
+      this.allGroupBalances.forEach((balance)=>{
+        if(balance.owedBy == user){
+          this.allGroupDebt[user] = this.allGroupDebt[user]+balance.debtAmount;
+        }
+      })
+    })
+  }
+  
+  //calculate the total dues of the user for the group
+  public calculateUserPendingDebts = () : any=>{
+    let debts = [];
+    this.allGroupBalances.forEach((balance)=>{
+      if(balance.owedBy == this.userId && balance.payee != this.userId){
+        debts.push(balance.payee);
+      }
+      let newDebts = [... new Set(debts)]
+      newDebts.forEach((user)=>{
+        this.allGroupCreditsBalance[user] = 0;
+        this.allGroupBalances.forEach((balance)=>{
+          if(balance.payee == user){
+            this.allGroupCreditsBalance[user] = this.allGroupCreditsBalance[user]+balance.debtAmount;
+          }
+        })
+      })
+    })
+    console.log(this.allGroupCreditsBalance);
   }
 
 }
