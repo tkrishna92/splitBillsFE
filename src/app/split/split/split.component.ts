@@ -196,7 +196,8 @@ export class SplitComponent implements OnInit {
       description : this.newExpenseDescription,
       amount : this.newExpenseAmount,
       paidBy : this.newExpensePaidBy,
-      involvedMembers : expInvMems
+      involvedMembers : expInvMems,
+      userName : this.userName
     }
     this.expenseService.createNewExpense(data).subscribe(
       data=>{
@@ -446,7 +447,7 @@ export class SplitComponent implements OnInit {
       newDebts.forEach((user)=>{
         this.allGroupCreditsBalance[user] = 0;
         this.allGroupBalances.forEach((balance)=>{
-          if(balance.payee == user){
+          if(balance.payee == user && balance.owedBy == this.userId){
             this.allGroupCreditsBalance[user] = this.allGroupCreditsBalance[user]+balance.debtAmount;
           }
         })

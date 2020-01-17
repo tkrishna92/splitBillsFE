@@ -20,6 +20,7 @@ export class ExpenseService {
     .set("involvedMembers", data.involvedMembers)
     .set("amount", data.amount)
     .set("paidBy", data.paidBy)
+    .set("userName", data.userName)
     return this._http.post(`${this.expenseUrl}/createNewExpense?authToken=${this.cookies.get('authToken')}`, newExpenseParams);
   }
 
