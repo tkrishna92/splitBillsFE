@@ -139,3 +139,10 @@
     padding : 5px;
     margin : 3px;
 }
+
+.expenseHistory {
+    background-color: rgb(255, 217, 167);
+    border-radius: 3px;
+    padding : 5px;
+    margin : 3px;
+}

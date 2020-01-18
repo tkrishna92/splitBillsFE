@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/user.service';
 import { GroupService } from 'src/app/group.service';
-import { faUserFriends, faPlusCircle, faEdit, faTrash, faWallet, faPlus, faMinus, faEllipsisV} from '@fortawesome/free-solid-svg-icons';
+import { faUserFriends, faPlusCircle, faEdit, faTrash, faWallet, faMoneyBillWave, faPlus, faMinus, faEllipsisV} from '@fortawesome/free-solid-svg-icons';
 import { ExpenseService } from 'src/app/expense.service';
 
 @Component({
@@ -29,6 +29,7 @@ export class SplitComponent implements OnInit {
   public wallet = faWallet;
   public simplePlusIcon = faPlus;
   public simpleMinusIcon = faMinus;
+  public settleIcon = faMoneyBillWave;
 
   //public variables
   public authToken : string;
@@ -63,6 +64,18 @@ export class SplitComponent implements OnInit {
   public allGroupBalances :any[] = [];
   public allGroupDebt : any[] = [];
   public allGroupCreditsBalance : any[] = [];
+  public currentExpenseId : string;
+  public selectedExpenseDetails : any[] = [];
+  public newChangedAmount : number;
+  public existingUsersNames : string;
+  public addingUsers :any[] = [];
+  public addedUsersNames : string;
+  public expenseHistory : any[] = [];
+  public existingUsers :any[] = [];
+  public displayExistingUsers :any[] = [];
+  public displayExistingUsersString :string;
+  public removingUserIds :any[] = [];
+  public removingUserNames :any [] = [];
 
   constructor(private spinner : NgxSpinnerService, private cookies : CookieService, private toaster : ToastrService , private router : Router, private userService : UserService, private groupService : GroupService, private expenseService : ExpenseService) { }
 
@@ -264,6 +277,7 @@ export class SplitComponent implements OnInit {
     let data = {
       expenseId : expenseId
     }
+    this.currentExpenseId = expenseId;
     this.expenseService.getAllExpenseBalance(data).subscribe(
       data=>{
         if(data.status == 200){
@@ -311,7 +325,150 @@ export class SplitComponent implements OnInit {
     )
   }
 
+  //get single expense details
+  public getSingleExpenseDetails = (expenseId): any=>{
+    this.selectedExpenseDetails = [];
+    this.existingUsersNames = "";
+    this.addingUsers = [];
+    this.addedUsersNames = "";
+    this.existingUsers = [];
+    this.displayExistingUsers = [];
+    this.displayExistingUsersString = "";
+    this.removingUserIds = [];
+    this.removingUserNames = [];
+    let data = {
+      expenseId : expenseId
+    }
+    this.expenseService.getExpenseDetails(data).subscribe(
+      data=>{
+        if(data.status == 200){
+          console.log("single expense retreived");
+          console.log(data);
+          this.selectedExpenseDetails = data.data;
+          this.newChangedAmount = data.data.expenseAmount;
+          this.expenseHistory = data.data.expenseLatestModification;
+          console.log(this.groupUsersList);
+          data.data.expenseMembers.forEach((user)=>{
+            this.groupUsersList.map((groupUser)=>{
+              if(groupUser.userId == user){
+                this.existingUsers.push(groupUser);
+                this.displayExistingUsers.push(`${groupUser.firstName} ${groupUser.lastName}`)
+              }
+            })
+          })
+          this.displayExistingUsersString = this.displayExistingUsers.toString();
+          data.data.expenseMembers.forEach((user)=>{
+            this.createExistingUserName(user);
+          })
+        }else{
+          this.toaster.warning(data.message);
+        }
+      }
+    )
+  }
 
+  //delete expense and all the related balances
+  public deleteExpense = (): any=>{
+    let data = {
+      expenseId : this.selectExpenseId
+    }
+    this.expenseService.deleteExpense(data).subscribe(
+      data=>{
+        if(data.status == 200){
+          this.toaster.success(data.message);
+          this.getAllExpensesOfGroup();
+        }else{
+          this.toaster.warning(data.message);
+        }
+      }
+    )
+  }
+
+  //change amount of the expense
+  public changeAmount = (): any=>{
+    let data = {
+      expenseId : this.selectExpenseId,
+      userName : this.userName,
+      newAmount : this.newChangedAmount
+    }
+    this.expenseService.editExpenseAmount(data).subscribe(
+      data=>{
+        if(data.status == 200){
+          this.toaster.success(data.message);
+          this.getAllExpensesOfGroup();
+        }else {
+          this.toaster.warning(data.message);
+        }
+      }
+    )
+  }
+
+  //add users to existing expense
+  public addUsersToExistingExpense = (): any=>{
+    let data = {
+      expenseId : this.selectExpenseId,
+      userName : this.userName,
+      addedUsers : this.addingUsers.toString(),
+      addedUsersNames : this.addedUsersNames
+    }
+    console.log(data);
+    this.expenseService.addUsersToExpense(data).subscribe(
+      data=>{
+        if(data.status == 200){
+          this.toaster.success(data.message);
+          this.getAllExpensesOfGroup();
+        }else {
+          this.toaster.warning(data.message);
+        }
+      }
+    )
+  }
+
+  //remove users from existing expense
+  public removeUsersFromExistingExpense = (): any=>{
+    let data = {
+      expenseId : this.selectExpenseId,
+      userName : this.userName,
+      removeUsers : this.removingUserIds.toString(),
+      removedUserNames : this.removingUserNames.toString()
+    }
+    console.log(data);
+    this.expenseService.removeUsersFromExpense(data).subscribe(
+      data=>{
+        if(data.status == 200){
+          this.toaster.success(data.message);
+          this.getAllExpensesOfGroup();
+        }else {
+          this.toaster.warning(data.message);
+        }
+      }
+    )
+  }
+
+  //settle logged in user's share of the expense
+  public settleUserShareOfExpense = (): any=>{
+    let name = ""
+    this.groupUsersList.map((user)=>{
+      if(user.userId == this.selectedExpenseDetails["expensePaidBy"]){
+       name = `${user.firstName} ${user.lastName}`
+      }
+    })
+    let data = {
+      expenseId : this.selectExpenseId,
+      userName : this.userName,
+      payeeName : name
+    }
+    this.expenseService.settleUserExpense(data).subscribe(
+      data=>{
+        if(data.status == 200){
+          this.toaster.success(data.message);
+          this.getAllExpensesOfGroup();
+        }else{
+          this.toaster.warning(data.message);
+        }
+      }
+    )
+  }
 
   //----------------------functions using userService---------------------
 
@@ -374,6 +531,47 @@ export class SplitComponent implements OnInit {
     })
   }
 
+  //create a list of existing user names of the selected expense
+  public createExistingUserName = (user): any=>{
+    console.log("create existing user name : "+user);
+    this.groupUsersList.forEach((groupUser)=>{
+      if(groupUser.userId == user){
+        this.existingUsersNames = this.existingUsersNames +(`${groupUser.firstName} ${groupUser.lastName}, `);
+      }
+    })
+  }
+
+  //add users to existing user names for adding users to expense and create a string of added userId's
+  public addMoreExpenseUsers = (userId): any=>{
+    this.addingUsers.push(userId);
+    this.createExistingUserName(userId);
+    this.groupUsersList.forEach((groupUser)=>{
+      if(groupUser.userId == userId){
+        if(this.addedUsersNames.length > 1){
+          this.addedUsersNames = this.addedUsersNames +(`, ${groupUser.firstName} ${groupUser.lastName}`);
+        }else {
+          this.addedUsersNames = `${groupUser.firstName} ${groupUser.lastName}`
+        }
+      }
+    })
+  }
+
+  //remove users from the display array and create a string of removing user's ids and removing users names
+  public removeExpenseUsers = (userId, firstName, lastName):any=>{
+    this.existingUsers.map((user)=>{
+      if(user.userId == userId){
+        this.existingUsers.splice(this.existingUsers.indexOf(user), 1);
+        this.displayExistingUsers = [];
+        this.existingUsers.forEach((availableUser)=>{
+          this.displayExistingUsers.push(`${availableUser.firstName} ${availableUser.lastName}`)
+        })
+      }
+    })
+    this.displayExistingUsersString = this.displayExistingUsers.toString();
+    this.removingUserIds.push(userId)
+    this.removingUserNames.push(` ${firstName} ${lastName}`)
+  }
+
   //group details view modifier
   public groupDetailsView = (selector):any=>{
     console.log(selector);
@@ -415,6 +613,7 @@ export class SplitComponent implements OnInit {
   public selectExpense =(expenseId):any=>{
     this.selectExpenseId = expenseId;
     this.getAllExpenseBalance(expenseId);
+    this.getSingleExpenseDetails(expenseId);
   }
 
   //calculate the total pending settlements of the group
@@ -434,6 +633,18 @@ export class SplitComponent implements OnInit {
         }
       })
     })
+  }
+
+  //get payee name
+  public getPayeeName = ()=>{
+    let name = ""
+    this.groupUsersList.map((user)=>{
+      if(user.userId == this.selectedExpenseDetails["expensePaidBy"]){
+        name = `${user.firstName} ${user.lastName}`
+      }
+    })
+    console.log(name);
+    return name;
   }
   
   //calculate the total dues of the user for the group

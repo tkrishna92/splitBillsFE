@@ -38,7 +38,8 @@
         <div class="col-md-2 col-sm-3 leftColumn d-none d-sm-block">
             <div class="row title justify-content-between">
                 <a>Groups</a>
-                <fa-icon style="margin-right: 8px;" [icon]="plusIcon" data-toggle="modal" data-target="#createNewGroup"></fa-icon>
+                <fa-icon style="margin-right: 8px;" [icon]="plusIcon" data-toggle="modal" data-target="#createNewGroup">
+                </fa-icon>
                 <!-- Modal -->
                 <div class="modal fade" id="createNewGroup" tabindex="-1" role="dialog" aria-labelledby="NewGroup"
                     aria-hidden="true">
@@ -75,7 +76,8 @@
             <div class="content">
                 <div class="row" *ngFor="let group of groups">
                     <div class="col-12 p-0">
-                        <a class="col-11" [hidden]="selectedGroupId == group.groupId" (click)="getSingleGroup(group.groupId)"><span
+                        <a class="col-11" [hidden]="selectedGroupId == group.groupId"
+                            (click)="getSingleGroup(group.groupId)"><span
                                 style="margin-left: 3px;">{{group.groupName}}</span></a>
                         <a class="col-11" *ngIf="selectedGroupId == group.groupId" class="selectedGroup"><span
                                 style="margin-left: 3px;">{{group.groupName}}</span></a>
@@ -87,13 +89,13 @@
                 <fa-icon class="groupOptionIcons" [icon]="groupIcon" (click)="groupDetailsView('groupUsers')"></fa-icon>
                 <div class="groupOptionIcons" (click)="groupDetailsView('whoOwesYou')">
                     <fa-icon [icon]="wallet"></fa-icon>
-                    <fa-icon [icon]="simplePlusIcon" style ="margin-left : 2px; font-size: 0.7rem;"></fa-icon>
+                    <fa-icon [icon]="simplePlusIcon" style="margin-left : 2px; font-size: 0.7rem;"></fa-icon>
                 </div>
                 <div class="groupOptionIcons" (click)="groupDetailsView('whomYouOwe')">
-                    <fa-icon [icon]="wallet" ></fa-icon>
+                    <fa-icon [icon]="wallet"></fa-icon>
                     <fa-icon [icon]="simpleMinusIcon" style="margin-left : 2px; font-size: 0.7rem;"></fa-icon>
                 </div>
-                
+
             </div>
             <div *ngIf="viewGroupUsers" class="row">
                 <h6 class="heading">Group Members</h6>
@@ -104,15 +106,15 @@
             <div *ngIf="viewWhoOwesYou" class="row">
                 <h6 class="heading">You Get</h6>
                 <div class="col-12 selectedGroupOptionContent" *ngFor="let groupUser of groupUsersList">
-                    <a *ngIf="groupUser.userId != userId" >{{groupUser.firstName}} {{groupUser.lastName}} owes you </a>
+                    <a *ngIf="groupUser.userId != userId">{{groupUser.firstName}} {{groupUser.lastName}} owes you </a>
                     <a><span style="color:rgb(58, 184, 146)">{{allGroupDebt[groupUser.userId]}}</span></a>
                 </div>
             </div>
             <div *ngIf="viewWhomYouOwe" class="row">
                 <h6 class="heading">You Owe</h6>
                 <div class="col-12 selectedGroupOptionContent" *ngFor="let groupUser of groupUsersList">
-                    <a *ngIf ="groupUser.userId != userId">You owe {{groupUser.firstName}} {{groupUser.lastName}}</a>
-                    <a ><span style="color:rgb(184, 58, 58)"> {{allGroupCreditsBalance[groupUser.userId]}}</span></a>
+                    <a *ngIf="groupUser.userId != userId">You owe {{groupUser.firstName}} {{groupUser.lastName}}</a>
+                    <a><span style="color:rgb(184, 58, 58)"> {{allGroupCreditsBalance[groupUser.userId]}}</span></a>
                 </div>
             </div>
         </div>
@@ -121,7 +123,7 @@
                 <div *ngIf="selectGroupPrompt" class="col-12 header">
                     <div class="col groupTitle">
                         <a style="font-style:italic">select group to see details !</a>
-                    </div>                    
+                    </div>
                 </div>
                 <div *ngFor="let group of groupDetails" class="col-12 justify-content-between header">
                     <div class="row groupTitle p-2 justify-content-between">
@@ -133,25 +135,31 @@
                     </div>
                     <div class="row justify-content-end">
                         <div class="dropdown">
-                            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="addUserButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              Add Users to Group
+                            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="addUserButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Add Users to Group
                             </button>
                             <div class="dropdown-menu" aria-labelledby="addUserButton">
-                                <div style="margin-left: 5px; border-bottom: 1px solid rgb(185, 185, 185); max-width: fit-content;">available users</div>
+                                <div
+                                    style="margin-left: 5px; border-bottom: 1px solid rgb(185, 185, 185); max-width: fit-content;">
+                                    available users</div>
                                 <div *ngFor="let user of splitUsers" class="dropdown-item dropper">
-                                    <fa-icon style="margin-right: 1rem;" class="groupOptionIcons" [icon]="plusIcon" (click) = "addUserToGroup(user.email)"></fa-icon>{{user.firstName}} {{user.lastName}}
+                                    <fa-icon style="margin-right: 1rem;" class="groupOptionIcons" [icon]="plusIcon"
+                                        (click)="addUserToGroup(user.email)"></fa-icon>{{user.firstName}}
+                                    {{user.lastName}}
                                 </div>
-                              
+
                             </div>
                         </div>
                         <div class="dropdown" style="margin-left: 5px;">
-                            <button class="btn btn-sm btn-secondary" type="button" data-toggle="modal" data-target="#createNewExpense">
-                              Add Expenses
+                            <button class="btn btn-sm btn-secondary" type="button" data-toggle="modal"
+                                data-target="#createNewExpense">
+                                Add Expenses
                             </button>
 
                             <!-- modal for add expenses-->
-                            <div class="modal fade" id="createNewExpense" tabindex="-1" role="dialog" aria-labelledby="NewExpense"
-                                aria-hidden="true">
+                            <div class="modal fade" id="createNewExpense" tabindex="-1" role="dialog"
+                                aria-labelledby="NewExpense" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -164,65 +172,89 @@
                                             <form>
                                                 <div class="form-group">
                                                     <label>Expense Title</label>
-                                                    <input type="text" name="newExpenseTitle" class="form-control inputForm"
-                                                        [(ngModel)]="newExpenseTitle" #newexpensetitle="ngModel"
-                                                        placeholder="enter expense title" required autofocus>
+                                                    <input type="text" name="newExpenseTitle"
+                                                        class="form-control inputForm" [(ngModel)]="newExpenseTitle"
+                                                        #newexpensetitle="ngModel" placeholder="enter expense title"
+                                                        required autofocus>
                                                 </div>
-                                                <div [hidden]="newexpensetitle.valid || newexpensetitle.pristine" class="alert alert-danger">
+                                                <div [hidden]="newexpensetitle.valid || newexpensetitle.pristine"
+                                                    class="alert alert-danger">
                                                     please enter expense title
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label>Expense description</label>
-                                                    <input type="text" name="newExpenseDescription" class="form-control inputForm"
-                                                        [(ngModel)]="newExpenseDescription" #newexpensedescription="ngModel"
+                                                    <input type="text" name="newExpenseDescription"
+                                                        class="form-control inputForm"
+                                                        [(ngModel)]="newExpenseDescription"
+                                                        #newexpensedescription="ngModel"
                                                         placeholder="enter description of expense" required autofocus>
                                                 </div>
-                                                <div [hidden]="newexpensedescription.valid || newexpensedescription.pristine" class="alert alert-danger">
+                                                <div [hidden]="newexpensedescription.valid || newexpensedescription.pristine"
+                                                    class="alert alert-danger">
                                                     please enter a description
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label>Amount</label>
-                                                    <input type="text" name="newExpenseAmount" class="form-control inputForm"
-                                                        [(ngModel)]="newExpenseAmount" #newexpenseamount="ngModel"
-                                                        placeholder="enter amount" required autofocus>
+                                                    <input type="text" name="newExpenseAmount"
+                                                        class="form-control inputForm" [(ngModel)]="newExpenseAmount"
+                                                        #newexpenseamount="ngModel" placeholder="enter amount" required
+                                                        autofocus>
                                                 </div>
-                                                <div [hidden]="newexpenseamount.valid || newexpenseamount.pristine" class="alert alert-danger">
+                                                <div [hidden]="newexpenseamount.valid || newexpenseamount.pristine"
+                                                    class="alert alert-danger">
                                                     please enter amount
                                                 </div>
                                             </form>
-                                            <div class = "expenseDetail">
+                                            <div class="expenseDetail">
                                                 <div class="col">
-                                                    expense paid by 
-                                                    <button type="button" class="expenseMembers" id="addPaidByButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <a *ngIf = "selectedPayeeNameFlag">you</a>
-                                                        <a *ngIf = "!selectedPayeeNameFlag">{{selectedPayeeName}}</a>
+                                                    expense paid by
+                                                    <button type="button" class="expenseMembers" id="addPaidByButton"
+                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false">
+                                                        <a *ngIf="selectedPayeeNameFlag">you</a>
+                                                        <a *ngIf="!selectedPayeeNameFlag">{{selectedPayeeName}}</a>
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="addPaidByButton">
-                                                        <div style="margin-left: 5px; border-bottom: 1px solid rgb(185, 185, 185); max-width: fit-content;">available users</div>
-                                                        <div *ngFor="let user of groupUsersList" class="dropdown-item dropper" (click) = "addPaidByUser(user.userId, user.firstName, user.lastName)">
-                                                            <fa-icon style="margin-right: 1rem;" class="groupOptionIcons" [icon]="plusIcon"></fa-icon>{{user.firstName}} {{user.lastName}}
-                                                        </div>                                                      
+                                                        <div
+                                                            style="margin-left: 5px; border-bottom: 1px solid rgb(185, 185, 185); max-width: fit-content;">
+                                                            available users</div>
+                                                        <div *ngFor="let user of groupUsersList"
+                                                            class="dropdown-item dropper"
+                                                            (click)="addPaidByUser(user.userId, user.firstName, user.lastName)">
+                                                            <fa-icon style="margin-right: 1rem;"
+                                                                class="groupOptionIcons" [icon]="plusIcon"></fa-icon>
+                                                            {{user.firstName}} {{user.lastName}}
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="col">
-                                                     and equally split amongst 
-                                                     <button type="button" class="expenseMembers" id="addExpenseMembers" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <a *ngIf = "selectedMembersFlag">Select Members</a>
+                                                    and equally split amongst
+                                                    <button type="button" class="expenseMembers" id="addExpenseMembers"
+                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false">
+                                                        <a *ngIf="selectedMembersFlag">Select Members</a>
                                                         <a>{{selectedExpInvolvedMembers}}</a>
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="addExpenseMembers">
-                                                        <div style="margin-left: 5px; border-bottom: 1px solid rgb(185, 185, 185); max-width: fit-content;">available users</div>
-                                                        <div *ngFor="let user of groupUsersList" class="dropdown-item dropper" (click) = "addExpenseMember(user.userId, user.firstName, user.lastName)">
-                                                            <fa-icon style="margin-right: 1rem;" class="groupOptionIcons" [icon]="plusIcon" ></fa-icon>{{user.firstName}} {{user.lastName}}
-                                                        </div>                                                      
+                                                        <div
+                                                            style="margin-left: 5px; border-bottom: 1px solid rgb(185, 185, 185); max-width: fit-content;">
+                                                            available users</div>
+                                                        <div *ngFor="let user of groupUsersList"
+                                                            class="dropdown-item dropper"
+                                                            (click)="addExpenseMember(user.userId, user.firstName, user.lastName)">
+                                                            <fa-icon style="margin-right: 1rem;"
+                                                                class="groupOptionIcons" [icon]="plusIcon"></fa-icon>
+                                                            {{user.firstName}} {{user.lastName}}
+                                                        </div>
                                                     </div>
-                                                </div>                                                
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Cancel</button>
                                             <button class="btn btn-primary" style="margin-right: 10px;" type="button"
                                                 data-dismiss="modal" (click)="createNewExpense()">create</button>
                                         </div>
@@ -233,43 +265,265 @@
                     </div>
                 </div>
                 <div class="col-12">
-                    <div class="row expenseContent" *ngFor="let expense of expenses" >
+                    <div class="row expenseContent" *ngFor="let expense of expenses">
                         <div class="col-12" (click)="selectExpense(expense.expenseId)">
-                            <div class="row justify-content-between" data-toggle="collapse" href="#expenseDetail" role="button" aria-expanded="false" aria-controls="expenseDetail">
-                                <div class="col-2">
+                            <div class="row justify-content-between" data-toggle="collapse" href="#expenseDetail"
+                                role="button" aria-expanded="false" aria-controls="expenseDetail">
+                                <div class="col-4" style="max-height: 2.5rem; overflow: auto;">
                                     <div>{{expense.expenseTitle}}</div>
                                 </div>
-                                <div class="col-4">
-                                    <div class= "small text-muted" style= "margin-top : 3px; overflow: auto; scrollbar-width: 3px;">{{expense.expenseDescription}}</div>
+                                <div class="col-4" style="max-height: 2.5rem; overflow: auto;">
+                                    <div class="small text-muted"
+                                        style="margin-top : 3px; overflow: auto; scrollbar-width: 3px;">
+                                        {{expense.expenseDescription}}</div>
                                 </div>
-                                <div class="col-3">
+                                <div class="col-2" style="max-height: 2.5rem; overflow: auto;">
                                     <div class="row small"><u>created</u></div>
                                     <div class="row small">{{expense.expenseCreatedOn.split('T')[0]}}</div>
                                 </div>
-                                <div class="collapse col-12" id="expenseDetail" *ngIf="selectExpenseId == expense.expenseId">
-                                   <div class="card card-body">
-                                     <div class="row">
-                                        <div class="col-12 expenseSubject">
-                                            {{payeeName}} paid {{expense.expenseAmount}} for {{expense.expenseTitle}}
-                                            <div class="row small ml-2">
-                                                created : {{expense.expenseCreatedOn.split('T')[0]}} by {{expense.expenseCreatorName}}
+                                <div class="collapse col-12" id="expenseDetail"
+                                    *ngIf="selectExpenseId == expense.expenseId">
+                                    <div class="card card-body">
+                                        <div class="row">
+                                            <div class="col-10 expenseSubject">
+                                                {{payeeName}} paid {{expense.expenseAmount}} for
+                                                {{expense.expenseTitle}}
+                                                <div class="row small ml-2">
+                                                    created : {{expense.expenseCreatedOn.split('T')[0]}} by
+                                                    {{expense.expenseCreatorName}}
+                                                </div>
+                                                <div class="row small ml-2" *ngIf="expenseModifiedBy">
+                                                    last modified on : {{expense.expenseModifiedOn.split('T')[0]}} by
+                                                    {{expenseModifiedBy}}
+                                                </div>
                                             </div>
-                                            <div class="row small ml-2" *ngIf="expenseModifiedBy">
-                                                last modified on : {{expense.expenseModifiedOn.split('T')[0]}} by {{expenseModifiedBy}}
+                                            <div class="col-2 expenseSubject">
+                                                <div class="dropdown" style="margin-top: 3px;">
+                                                    <button style="margin-top: 3px;" class="btn btn-sm dropdown-toggle"
+                                                        type="button" id="expenseOptions" data-toggle="dropdown"
+                                                        aria-haspopup="true" aria-expanded="false">
+                                                        <fa-icon style="size: 0.8rem;" [icon]="optionsIcon"></fa-icon>
+                                                    </button>
+                                                    <div class="dropdown-menu" style="width: max-content;"
+                                                        aria-labelledby="expenseOptions">
+                                                        <a class="dropdown-item" data-toggle="modal"
+                                                            data-target="#deleteExpense">
+                                                            <fa-icon style="size: 0.8rem;" [icon]="recycleIcon">
+                                                            </fa-icon> delete expense
+                                                        </a>
+                                                        <a class="dropdown-item" data-toggle="modal"
+                                                        data-target="#changeAmount">
+                                                            <fa-icon style="size: 0.8rem;" [icon]="editIcon"></fa-icon>
+                                                            change amount
+                                                        </a>
+                                                        <a class="dropdown-item" data-toggle="modal" 
+                                                        data-target="#addUsersToExpense">
+                                                            <fa-icon style="size: 0.8rem;" [icon]="simplePlusIcon">
+                                                            </fa-icon> add user to expense
+                                                        </a>
+                                                        <a class="dropdown-item" data-toggle="modal" 
+                                                        data-target="#removeUsersFromExpense">
+                                                            <fa-icon style="size: 0.8rem;" [icon]="simpleMinusIcon">
+                                                            </fa-icon> remove user from expense
+                                                        </a>
+                                                        <a class="dropdown-item" data-toggle="modal"
+                                                        data-target="#settleExpense">
+                                                            <fa-icon style="size: 0.8rem;" [icon]="settleIcon">
+                                                            </fa-icon> settle this expense
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>                                        
-                                        <div class="col-6" style = "border-right : 1px solid rgb(255, 92, 92)">
-                                            <p class="small expenseOwed" *ngFor="let owed of owedBy">{{owed}} for {{expense.expenseTitle}}</p>
+                                            <div class="col-6" style="border-right : 1px solid rgb(255, 92, 92)">
+                                                <div class="row" style="overflow: auto; max-height: 175px; scrollbar-width: 1px;">
+                                                    <h6 class="small text-muted" style="border-bottom: 1px solid rgb(209, 209, 209); padding : 5px;">who owes whom</h6>
+                                                </div>
+                                                <div class="row">
+                                                    <p class="small expenseOwed" *ngFor="let owed of owedBy">{{owed}} for
+                                                    {{expense.expenseTitle}}</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="row">
+                                                    <h6 class="small text-muted" style="border-bottom: 1px solid rgb(209, 209, 209); padding : 5px;">history of expense</h6>
+                                                </div>
+                                                <div class="row" style="overflow: auto; max-height: 175px; scrollbar-width: 1px;">
+                                                    <p class="small expenseHistory" *ngFor = "let history of expenseHistory">
+                                                        {{history}}
+                                                    </p>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-6">
-                                        </div>
-                                   </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>        
+        </div>
+    </div>
+</div>
+<!-- Modal for delete expense-->
+<div class="modal fade" id="deleteExpense" tabindex="-1" role="dialog" aria-labelledby="deleteExpenseLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteExpenseLabel">Modal title</h5>                
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span>Are you sure you want to delete this expense. <br> This is permanent and cannot be reverted</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="deleteExpense()">Proceed</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal for change amount of expense-->
+<div class="modal fade" id="changeAmount" tabindex="-1" role="dialog" aria-labelledby="changeAmountLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changeAmountLabel">Change expense amount</h5>                
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>Enter New Amount</label>
+                        <input type="text" name="newChangedAmount" class="form-control inputForm"
+                            [(ngModel)]="newChangedAmount" #newchangedamount="ngModel"
+                            placeholder="enter an amount" required autofocus>
+                    </div>
+                    <div [hidden]="newchangedamount.valid || newchangedamount.pristine" class="alert alert-danger">
+                        please enter an amount
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="changeAmount()">Proceed</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal for adding users to expense-->
+<div class="modal fade" id="addUsersToExpense" tabindex="-1" role="dialog" aria-labelledby="addUsersToExpenseLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUsersToExpenseLabel">Add users to expense</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>add new users</label>
+                        <input type="text" name="existingUsersNames" class="form-control inputForm"
+                            [(ngModel)]="existingUsersNames" #existingusersnames="ngModel" placeholder="enter an amount"
+                            required autofocus>
+                    </div>
+                    <div [hidden]="existingusersnames.valid || existingusersnames.pristine" class="alert alert-danger">
+                        please select members
+                    </div>
+                </form>
+                <button type="button" class="expenseMembers" id="addMoreExpenseMembers" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <a >Select Members</a>                    
+                </button>
+                <div class="dropdown-menu" aria-labelledby="addMoreExpenseMembers">
+                    <div style="margin-left: 5px; border-bottom: 1px solid rgb(185, 185, 185); max-width: fit-content;">
+                        available users</div>
+                    <div *ngFor="let user of groupUsersList" class="dropdown-item dropper"
+                        (click)="addMoreExpenseUsers(user.userId)">
+                        <fa-icon style="margin-right: 1rem;" class="groupOptionIcons" [icon]="plusIcon"></fa-icon>
+                        {{user.firstName}} {{user.lastName}}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                    (click)="addUsersToExistingExpense()">Proceed</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal for adding users to expense-->
+<div class="modal fade" id="removeUsersFromExpense" tabindex="-1" role="dialog" aria-labelledby="removeUsersFromExpenseLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeUsersFromExpenseLabel">Add users to expense</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>available users in expense</label>
+                        <input type="text" name="displayExistingUsersString" class="form-control inputForm"
+                            [(ngModel)]="displayExistingUsersString" #displayexistingusersstring="ngModel" placeholder="enter an amount"
+                            required autofocus>
+                    </div>
+                    <div [hidden]="displayexistingusersstring.valid || displayexistingusersstring.pristine" class="alert alert-danger">
+                        please select members to be removed
+                    </div>
+                </form>
+                <button type="button" class="expenseMembers" id="addMoreExpenseMembers" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <a >Select Members</a>                    
+                </button>
+                <div class="dropdown-menu" aria-labelledby="addMoreExpenseMembers">
+                    <div style="margin-left: 5px; border-bottom: 1px solid rgb(185, 185, 185); max-width: fit-content;">
+                        expense members</div>
+                    <div *ngFor="let user of existingUsers" class="dropdown-item dropper"
+                        (click)="removeExpenseUsers(user.userId, user.firstName, user.lastName)">
+                        <fa-icon style="margin-right: 1rem;" class="groupOptionIcons" [icon]="simpleMinusIcon"></fa-icon>
+                        {{user.firstName}} {{user.lastName}}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                    (click)="removeUsersFromExistingExpense()">Proceed</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal for settle expense-->
+<div class="modal fade" id="settleExpense" tabindex="-1" role="dialog" aria-labelledby="settleExpenseLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="settleExpenseLabel">Modal title</h5>                
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span>Are you sure you want to settle your share of this expense.</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="settleUserShareOfExpense()">Proceed</button>
+            </div>
+        </div>
     </div>
 </div>
